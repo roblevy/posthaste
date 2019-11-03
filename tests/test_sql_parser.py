@@ -20,7 +20,7 @@ def test_read_all():
     assert sp.EOF
 
 
-def test_select_state():
+def test_enter_select_state():
     sp = SqlParser("SELECT foo")
     sp._readn(5)  # SELEC
     assert sp.state_stack == []
@@ -29,7 +29,7 @@ def test_select_state():
     assert sp.buffer == ""
 
 
-def test_exit_state():
+def test_exit_select_state():
     sp = SqlParser("SELECT foo FROM bar")
     sp._readn(10)  # SELECT foo
     assert sp.state_stack == [State.SELECT]
@@ -44,3 +44,9 @@ def test_change_section():
     sp._readn(2)  # SELECT foo FROM
     print(sp.buffer)
     assert sp.state_stack == [State.FROM]
+
+
+def test_select_state():
+    """
+    We want to be able to read in a comma-separated list
+    """
