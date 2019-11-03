@@ -97,20 +97,11 @@ class FromState(_StateBase):
         pass
 
 
-class State(Enum):
+class State:
     """
     A list of allowed states. All code using this module should only refer to
     states using one of the elements of this enumeration.
     """
-
-    def __eq__(self, other):
-        return other == self.value
-
-    def __str__(self):
-        return self.value.name
-
-    def __repr__(self):
-        return f"State: {self.value.name}"
 
     COMMA_SEPARATED = CommaSeparatedState()
     FROM = FromState()
@@ -120,7 +111,7 @@ class State(Enum):
 
 class StateStack:
     """
-    A basic stack of `State`s.
+    A basic stack of `State`s. None is represented throughout as State.NONE.
 
     The top of the stack is returned as the actual `StateBase` child class.
     The stack should never be empty. An empty stack has a single element of
@@ -128,42 +119,45 @@ class StateStack:
     """
 
     def __init__(self):
-        self.empty_stack = [State.NONE]
-        self.stack: List[State] = self.empty_stack
+        self.stack: List[State] = []
 
     def __eq__(self, other):
-        if self.empty():
-            return (other == []) or (other == self.empty_stack)
+        if not self.stack:
+            return (other == []) or (other == [State.NONE])
         return other == self.stack
 
     def __repr__(self):
         return str(self.stack)
 
-    def empty(self) -> bool:
-        return self.stack == self.empty_stack
-
     def top(self) -> State:
         """
-        The stack should never be empty, so this should always work.
+        The top of the stack, or State.NONE if it's empty
         """
-        return self.stack[-1].value
+        try:
+            return self.stack[-1]
+        except IndexError:
+            return State.NONE
 
     def push(self, state: State) -> None:
-        if self.empty():
-            self.stack = []
-        self.stack.append(state)
+        """
+        Add to the stack. State.NONE has no effect.
+        """
+        if state != State.NONE:
+            self.stack.append(state)
 
     def pop(self) -> State:
-        pop_val = self.stack.pop()
-        if not self.stack:
-            self.stack = self.empty_stack
-        return pop_val
+        try:
+            return self.stack.pop()
+        except IndexError:
+            return State.NONE
 
     def queue(self, index=None) -> List[State]:
         """
         Every element except the last, in reverse order.
 
         (A, B, C, D).queue() -> (C, B, A)
+
+        If the queue is empty, return State.NONE
         """
         try:
             without_final = self.stack[:-1]

@@ -16,6 +16,7 @@ def test_empty():
     ss = StateStack()
     assert ss == []
     assert ss == [State.NONE]
+    assert ss.top() == State.NONE
 
 
 def test_push():
@@ -23,6 +24,8 @@ def test_push():
     ss.push("A")
     assert ss == ["A"]
     ss.push("B")
+    assert ss == ["A", "B"]
+    ss.push(State.NONE)
     assert ss == ["A", "B"]
 
 
@@ -48,3 +51,11 @@ def test_queue(state_stack):
 
 def test_queue_bad_index(state_stack):
     assert state_stack.queue(4) == State.NONE
+
+
+def test_top():
+    ss = StateStack()
+    ss.push("A")
+    assert ss.top() == "A"
+    ss.pop()
+    assert ss.top() == State.NONE

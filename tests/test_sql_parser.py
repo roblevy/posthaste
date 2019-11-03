@@ -3,10 +3,6 @@ import pytest
 from posthaste.parsing import SqlParser
 from posthaste.states import State
 
-# TODO: This is currently broken due to a weirdness with EmptyState which gets
-# set to [] at some point during execution. Now I come to think about it, maybe
-# it doesn't need to be represented as something other than [] after all...
-
 
 def test_read_one():
     sp = SqlParser("foo")
