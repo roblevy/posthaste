@@ -15,7 +15,6 @@ def state_stack():
 def test_empty():
     ss = StateStack()
     assert ss == []
-    assert ss == [State.NONE]
     assert ss.top() == State.NONE
 
 
@@ -38,7 +37,6 @@ def test_pop():
     popped = ss.pop()
     assert popped == "A"
     assert ss == []
-    assert ss == [State.NONE]
     ss.push("D")
     assert ss == ["D"]
 

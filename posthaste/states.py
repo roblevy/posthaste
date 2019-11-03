@@ -111,19 +111,13 @@ class State:
 
 class StateStack:
     """
-    A basic stack of `State`s. None is represented throughout as State.NONE.
-
-    The top of the stack is returned as the actual `StateBase` child class.
-    The stack should never be empty. An empty stack has a single element of
-    `State.NONE`, which `== []`.
+    A standard stack where None is represented throughout as State.NONE.
     """
 
     def __init__(self):
         self.stack: List[State] = []
 
     def __eq__(self, other):
-        if not self.stack:
-            return (other == []) or (other == [State.NONE])
         return other == self.stack
 
     def __repr__(self):
@@ -146,6 +140,9 @@ class StateStack:
             self.stack.append(state)
 
     def pop(self) -> State:
+        """
+        Pop from the top of the stack, or return State.NONE if it's empty
+        """
         try:
             return self.stack.pop()
         except IndexError:
